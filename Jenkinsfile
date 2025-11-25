@@ -51,7 +51,7 @@ pipeline {
        
     }
     
-    // Optional: Post-Build-Actions
+    // Optional: Post-Build-Actions..
     post {
         always {
             echo 'Pipeline abgeschlossen - Ergebnis: ${currentBuild.result}'

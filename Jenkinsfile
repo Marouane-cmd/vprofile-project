@@ -7,18 +7,18 @@ pipeline {
     
     environment {
         SNAP_REPO = 'vprofile-snapshot'
-		NEXUS_USER = 'admin'
-		NEXUS_PASS = 'admin'
-		RELEASE_REPO = 'vprofile-release'
-		CENTRAL_REPO = 'vpro-maven-central'
-		NEXUSIP = '172.31.4.143'
-		NEXUSPORT = '8081'
-		NEXUS_GRP_REPO = 'vpro-maven-group'
+        NEXUS_USER = 'admin'
+        NEXUS_PASS = 'admin'
+        RELEASE_REPO = 'vprofile-release'
+        CENTRAL_REPO = 'vpro-maven-central'
+        NEXUSIP = '172.31.4.143'
+        NEXUSPORT = '8081'
+        NEXUS_GRP_REPO = 'vpro-maven-group'
         NEXUS_LOGIN = 'nexuslogin'
     }
 
     stages {
-        stage('Build'){
+        stage('Build') {
             steps {
                 sh 'mvn -s settings.xml -DskipTests install'
             }
@@ -28,26 +28,40 @@ pipeline {
                     archiveArtifacts artifacts: '**/target/*.war'
                 }
             }
-
         }
         
-        stage('UNIT TEST'){
+        stage('UNIT TEST') {
             steps {
                 sh 'mvn test'
             }
         }
 
-	    stage('INTEGRATION TEST'){
+        stage('INTEGRATION TEST') {
             steps {
                 sh 'mvn verify -DskipUnitTests'
             }
         }
-		
-        stage ('CODE ANALYSIS WITH CHECKSTYLE'){
+        
+        stage('CODE ANALYSIS WITH CHECKSTYLE') {
             steps {
                 sh 'mvn checkstyle:checkstyle'
             }
-
+        }
+        
+        // Fügen Sie hier ggf. weitere Stages hinzu
+        // stage('Deploy') { ... }
+    }
     
+    // Optional: Post-Build-Actions
+    post {
+        always {
+            echo 'Pipeline abgeschlossen - Ergebnis: ${currentBuild.result}'
+        }
+        success {
+            echo 'Pipeline war erfolgreich!'
+        }
+        failure {
+            echo 'Pipeline ist fehlgeschlagen!'
+        }
     }
 }

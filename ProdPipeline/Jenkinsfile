@@ -100,8 +100,15 @@ pipeline {
                 )
             }
         }
-        
-       
+             
+    }
+
+    post {
+        always {
+          echo 'Slack Notification'
+          slackSend channel: '#',
+          color: 
+        }
     }
     
     // Optional: Post-Build-Actions....

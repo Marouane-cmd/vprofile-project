@@ -28,9 +28,22 @@ pipeline {
 
     post {
         always {
-          echo 'Slack Notification'
-          slackSend channel: '#',
-          color: 
+            echo 'Slack Notification wird gesendet...'
+            slackSend(
+                channel: '#deployments',  
+                color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
+                message: "Build ${currentBuild.displayName} - ${currentBuild.result}\nJob: ${env.JOB_NAME}\nBuild: ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}"
+            )
+            echo 'Pipeline abgeschlossen - Ergebnis: ${currentBuild.result}'
+        }
+        success {
+            echo 'Pipeline war erfolgreich!'
+        }
+        failure {
+            echo 'Pipeline ist fehlgeschlagen!'
+        }
+        unstable {
+            echo 'Pipeline ist instabil!'
         }
     }
     
